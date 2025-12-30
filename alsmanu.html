@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم متجر دارغون سوداني</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Tajawal,sans-serif;
+}
+
+body{
+  background:#060606;
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  text-align:center;
+  padding:25px;
+}
+header h1{
+  font-size:32px;
+}
+header p{
+  opacity:.7;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
+
+.section{
+  background:rgba(255,255,255,.07);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:25px;
+}
+
+.section h2{
+  margin-bottom:15px;
+}
+
+.form{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.form input,
+.form textarea,
+.form select{
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+}
+
+textarea{
+  grid-column:1/-1;
+  min-height:90px;
+}
+
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(90deg,#00c6ff,#0072ff);
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.danger{
+  background:#ff4444;
+}
+
+.list{
+  display:grid;
+  gap:15px;
+}
+
+.app{
+  background:rgba(0,0,0,.6);
+  border-radius:16px;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.app span{
+  font-size:14px;
+  opacity:.85;
+}
+
+#output{
+  width:100%;
+  min-height:320px;
+  background:#000;
+  color:#00ff9c;
+  padding:15px;
+  border-radius:15px;
+  font-family:monospace;
+  direction:ltr;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🐉 لوحة إدارة متجر دارغون سوداني</h1>
+  <p>إنشاء وتعديل ملف apps.json بدون Backend</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <h2>📂 تحميل apps.json الحالي</h2>
+  <input type="file" id="fileInput" accept=".json">
+</div>
+
+<div class="section">
+  <h2>➕ إضافة تطبيق جديد</h2>
+
+  <div class="form">
+    <input id="name" placeholder="اسم التطبيق">
+    <input id="img" placeholder="رابط صورة التطبيق">
+    <input id="apk" placeholder="رابط MediaFire">
+    <select id="type">
+      <option value="free">مجاني</option>
+      <option value="paid">مدفوع</option>
+    </select>
+    <input id="code" placeholder="كود التفعيل (للمدفوع)">
+    <input id="rate" type="number" step="0.1" placeholder="التقييم (مثلاً 4.8)">
+    <textarea id="desc" placeholder="وصف التطبيق"></textarea>
+  </div>
+
+  <br>
+  <button onclick="addApp()">إضافة التطبيق</button>
+</div>
+
+<div class="section">
+  <h2>📱 التطبيقات الحالية</h2>
+  <div class="list" id="list"></div>
+</div>
+
+<div class="section">
+  <h2>📦 apps.json النهائي</h2>
+  <p style="opacity:.7;margin-bottom:10px">
+    انسخ هذا الكود وضعه في GitHub مكان apps.json
+  </p>
+  <textarea id="output" readonly></textarea>
+</div>
+
+</div>
+
+<script>
+/* ===== ربط العناصر ===== */
+const nameInput = document.getElementById("name");
+const imgInput  = document.getElementById("img");
+const apkInput  = document.getElementById("apk");
+const typeInput = document.getElementById("type");
+const codeInput = document.getElementById("code");
+const rateInput = document.getElementById("rate");
+const descInput = document.getElementById("desc");
+const listBox   = document.getElementById("list");
+const output    = document.getElementById("output");
+const fileInput = document.getElementById("fileInput");
+
+let apps = [];
+
+/* ===== تحميل JSON ===== */
+fileInput.addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      apps = JSON.parse(reader.result);
+      render();
+    }catch{
+      alert("ملف JSON غير صالح");
+    }
+  };
+  reader.readAsText(file);
+});
+
+/* ===== إضافة تطبيق ===== */
+function addApp(){
+  const app = {
+    id: Date.now(),
+    name: nameInput.value.trim(),
+    img: imgInput.value.trim(),
+    apk: apkInput.value.trim(),
+    type: typeInput.value,
+    rate: parseFloat(rateInput.value) || 0,
+    desc: descInput.value.trim()
+  };
+
+  if(app.type === "paid"){
+    app.code = codeInput.value.trim();
+  }
+
+  if(!app.name || !app.img || !app.apk){
+    alert("يرجى إدخال اسم التطبيق، الصورة، والرابط");
+    return;
+  }
+
+  apps.push(app);
+  clearForm();
+  render();
+}
+
+/* ===== حذف ===== */
+function removeApp(index){
+  if(confirm("هل تريد حذف هذا التطبيق؟")){
+    apps.splice(index,1);
+    render();
+  }
+}
+
+/* ===== عرض ===== */
+function render(){
+  listBox.innerHTML = "";
+  apps.forEach((a,i)=>{
+    listBox.innerHTML += `
+      <div class="app">
+        <span>${a.name} - ${a.type === "free" ? "مجاني" : "مدفوع"}</span>
+        <button class="danger" onclick="removeApp(${i})">حذف</button>
+      </div>
+    `;
+  });
+
+  output.value = JSON.stringify(apps,null,2);
+}
+
+/* ===== تنظيف النموذج ===== */
+function clearForm(){
+  nameInput.value = "";
+  imgInput.value  = "";
+  apkInput.value  = "";
+  codeInput.value = "";
+  rateInput.value = "";
+  descInput.value = "";
+  typeInput.value = "free";
+}
+</script>
+
+</body>
+</html>
