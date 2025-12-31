@@ -1,0 +1,149 @@
+here<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>لوحة الأدمن - إنشاء apps.json</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+  background:#0b1020;
+  color:#fff;
+  font-family:system-ui;
+  margin:0;
+  padding:15px;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+}
+h1{margin-bottom:10px}
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:8px;
+  border:none;
+  background:#141a33;
+  color:#fff;
+}
+button{
+  margin-top:10px;
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:#00c8ff;
+  font-weight:bold;
+  cursor:pointer;
+}
+.app{
+  background:#141a33;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+.app small{color:#aaa}
+pre{
+  background:#050814;
+  padding:10px;
+  border-radius:10px;
+  overflow:auto;
+  max-height:300px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>لوحة إنشاء apps.json</h1>
+
+<label>اسم التطبيق</label>
+<input id="name">
+
+<label>الوصف</label>
+<textarea id="desc"></textarea>
+
+<label>التقييم</label>
+<input id="rate" type="number" step="0.1" value="4.5">
+
+<label>عدد التحميلات</label>
+<input id="down" type="number" value="0">
+
+<label>رابط الصورة</label>
+<input id="img">
+
+<label>رابط APK</label>
+<input id="apk">
+
+<label>التصنيف</label>
+<input id="cat" value="app">
+
+<button onclick="add()">إضافة التطبيق</button>
+
+<hr>
+
+<h3>التطبيقات</h3>
+<div id="list"></div>
+
+<hr>
+
+<button onclick="download()">تحميل apps.json</button>
+<button onclick="copyJson()">نسخ JSON</button>
+
+<h3>معاينة JSON</h3>
+<pre id="output"></pre>
+
+</div>
+
+<script>
+let apps = [];
+
+function add(){
+  const app = {
+    name: name.value,
+    description: desc.value,
+    rating: parseFloat(rate.value),
+    downloads: parseInt(down.value),
+    image: img.value,
+    apk: apk.value,
+    category: cat.value
+  };
+  apps.push(app);
+  render();
+}
+
+function render(){
+  list.innerHTML = "";
+  apps.forEach((a,i)=>{
+    list.innerHTML += `
+      <div class="app">
+        <b>${a.name}</b><br>
+        <small>${a.description}</small><br>
+        ⭐ ${a.rating} | ⬇ ${a.downloads}
+        <br>
+        <button onclick="del(${i})">حذف</button>
+      </div>
+    `;
+  });
+  output.textContent = JSON.stringify(apps, null, 2);
+}
+
+function del(i){
+  apps.splice(i,1);
+  render();
+}
+
+function download(){
+  const blob = new Blob([JSON.stringify(apps,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "apps.json";
+  a.click();
+}
+
+function copyJson(){
+  navigator.clipboard.writeText(JSON.stringify(apps,null,2));
+  alert("تم النسخ");
+}
+</script>
+</body>
+</html>
