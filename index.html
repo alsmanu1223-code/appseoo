@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>متجر دارغون ✅</title>
+
+<style>
+/* --- Reset وستايل عام --- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Tajawal',system-ui,Arial,sans-serif;
+  background:linear-gradient(180deg,#06070b,#030409);
+  color:#fff;overflow-x:hidden;
+}
+
+/* --- Header ثابت --- */
+.header{
+  position:fixed;top:0;left:0;right:0;height:64px;
+  background:rgba(8,10,14,0.9);display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:50;border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(90deg,#00e0ff,#0066ff);display:grid;place-items:center;color:#001;font-weight:800}
+.header h1{font-size:16px}
+
+/* --- Sidebar قابلة للفتح --- */
+.sidebar-toggle{cursor:pointer;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+.sidebar{
+  position:fixed;top:64px;right:-340px;width:340px;height:calc(100% - 64px);
+  background:#071023;padding:16px;transition:right .26s;z-index:60;border-left:1px solid rgba(255,255,255,0.03);overflow:auto;
+}
+.sidebar.open{right:0}
+.side-section{margin-bottom:14px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02)}
+.side-title{font-weight:800;margin-bottom:8px}
+.side-link{display:block;padding:8px;border-radius:8px;color:#fff;text-decoration:none;margin-bottom:6px}
+.side-link:hover{background:rgba(255,255,255,0.02)}
+
+/* --- Assistant UI في السايدبار --- */
+.ai-box{display:flex;flex-direction:column;gap:8px}
+.ai-messages{height:220px;overflow:auto;padding:8px;border-radius:8px;background:rgba(0,0,0,0.25)}
+.ai-msg{margin-bottom:8px;padding:8px;border-radius:8px}
+.ai-msg.user{background:linear-gradient(90deg,#0f1724,#0b1626);text-align:right}
+.ai-msg.bot{background:linear-gradient(90deg,#07122a,#052035);text-align:left}
+.ai-input{display:flex;gap:8px;margin-top:6px}
+.ai-input input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+.ai-input button{padding:10px 12px;border-radius:10px;border:none;background:#00e0ff;color:#001;font-weight:800;cursor:pointer}
+
+/* --- Main content --- */
+.container{max-width:1200px;margin:0 auto;padding:90px 14px 40px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.input,select{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.02);color:#fff}
+
+/* --- Grid responsive: 2 / 3 / 4 --- */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:900px){ .grid{grid-template-columns:repeat(3,1fr)} }
+@media(min-width:1200px){ .grid{grid-template-columns:repeat(4,1fr)} }
+
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);transition:transform .16s}
+.card:hover{transform:translateY(-6px)}
+.thumb{width:100%;height:140px;object-fit:cover;border-radius:10px;background:#000}
+.title{font-size:15px;margin:8px 0 4px}
+.desc{font-size:13px;opacity:.85;height:44px;overflow:hidden}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.badge{padding:5px 8px;border-radius:18px;font-weight:800}
+.badge.free{background:#00ff9c;color:#000}
+.badge.paid{background:#ff5b5b;color:#fff}
+.btn{display:block;text-align:center;padding:10px;border-radius:10px;background:linear-gradient(90deg,#00d8ff,#0075ff);color:#001;font-weight:800;text-decoration:none;margin-top:10px}
+
+/* --- code input for paid items --- */
+.codeBox input{width:100%;padding:9px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+.codeBox button{width:100%;margin-top:8px;padding:9px;border-radius:10px;border:none;background:#ffc107;color:#000;font-weight:800}
+
+/* --- Modal --- */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(1,1,1,0.6),rgba(1,1,1,0.6));z-index:80;padding:18px}
+.modal.show{display:flex}
+.modal-card{width:920px;max-width:98%;background:#071026;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.modal-body{display:grid;grid-template-columns:260px 1fr;gap:14px}
+.modal img{width:100%;border-radius:10px}
+
+/* --- backgrounds (themes) --- */
+.bg-default{background:linear-gradient(180deg,#06070b,#030409)}
+.bg-hacker{background: linear-gradient(180deg,#02040a,#000000), url('https://i.postimg.cc/3x7K1Yx8/hacker-bg.jpg') center/cover fixed no-repeat}
+.bg-code{background: linear-gradient(180deg,#0b1020,#020409), url('https://i.postimg.cc/XYZabc/code-bg.jpg') center/cover fixed no-repeat}
+.bg-network{background: linear-gradient(180deg,#041726,#00101a), url('https://i.postimg.cc/AbCdEf/network-bg.jpg') center/cover fixed no-repeat}
+
+/* small */
+.empty{text-align:center;padding:40px;color:#9aa3b2}
+</style>
+</head>
+<body id="body" class="bg-default">
+
+<!-- Header -->
+<div class="header">
+  <div class="brand">
+    <div class="logo">DS</div>
+    <h1>متجر دارغون سوداني</h1>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="sidebar-toggle" id="toggleBtn" title="قائمة">☰ القائمة</div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar" aria-hidden="true">
+  <div class="side-section">
+    <div class="side-title">تصفح سريع</div>
+    <a href="#" class="side-link" onclick="filterSet('all');return false;">كل المحتوى</a>
+    <a href="#" class="side-link" onclick="filterSet('app');return false;">التطبيقات</a>
+    <a href="#" class="side-link" onclick="filterSet('code');return false;">أكواد</a>
+    <a href="#" class="side-link" onclick="filterSet('sketchware');return false;">مشاريع Sketchware</a>
+    <a href="#" class="side-link" onclick="filterSet('tool');return false;">أدوات أخلاقية</a>
+  </div>
+
+  <div class="side-section">
+    <div class="side-title">الذكاء المساعد</div>
+    <div style="font-size:13px;opacity:.9;margin-bottom:8px">اسأل المساعد سؤال تعليمي أو اطلب اقتراحات (أخلاقي فقط).</div>
+
+    <div class="ai-box">
+      <div class="ai-messages" id="aiMessages" aria-live="polite"></div>
+      <div class="ai-input">
+        <input id="aiInput" placeholder="اكتب سؤالك... (مثال: كيف أبدأ تعلم اختبار اختراق أخلاقي؟)"/>
+        <button id="aiSend">اسأل</button>
+      </div>
+      <div style="margin-top:8px;font-size:13px;opacity:.8">
+        <button onclick="setTheme('bg-hacker')" style="margin-right:6px">خلفية هاكر</button>
+        <button onclick="setTheme('bg-code')" style="margin-right:6px">خلفية كود</button>
+        <button onclick="setTheme('bg-default')">خلفية افتراضية</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="side-section">
+    <div class="side-title">حول</div>
+    <div style="font-size:13px;opacity:.9">منصة تعليمية لمواضيع الأمن الأخلاقي، مشاريع Sketchware، وأمثلة برمجية. البريد: <b style="color:#00e0ff">alsmanu123456@gmail.com</b></div>
+  </div>
+</aside>
+
+<!-- Modal -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 id="mTitle"></h3>
+      <button onclick="closeModal()" style="background:none;border:none;color:#fff;font-weight:800;cursor:pointer">✕</button>
+    </div>
+    <div class="modal-body">
+      <div><img id="mImg" src="" alt="thumb"></div>
+      <div>
+        <div id="mDesc"></div>
+        <div style="margin-top:10px"><strong>التصنيف:</strong> <span id="mCat"></span></div>
+        <div style="margin-top:6px"><strong>التقييم:</strong> <span id="mRate"></span> &nbsp; <strong>التحميلات:</strong> <span id="mDownloads"></span></div>
+        <div id="mAction" style="margin-top:12px"></div>
+        <div style="margin-top:12px;font-size:13px;opacity:.9">لمساعدات أو شراء أكواد تواصل: <b style="color:#00e0ff">alsmanu123456@gmail.com</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="container">
+  <div class="controls">
+    <input id="search" class="input" placeholder="ابحث: اسم، وصف، وسم، لغة (مثال: VPN, PHP, Sketchware)"/>
+    <select id="category" class="input">
+      <option value="all">كل الفئات</option>
+      <option value="app">تطبيق</option>
+      <option value="code">كود</option>
+      <option value="sketchware">Sketchware</option>
+      <option value="tool">أداة</option>
+      <option value="tutorial">تعليم</option>
+    </select>
+    <select id="paid" class="input">
+      <option value="all">الكل</option>
+      <option value="free">مجاني</option>
+      <option value="paid">مدفوع</option>
+    </select>
+    <select id="sort" class="input">
+      <option value="rate">الأعلى تقييماً</option>
+      <option value="downloads">الأكثر تحميلًا</option>
+      <option value="new">الأحدث</option>
+      <option value="name">الاسم</option>
+    </select>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" style="display:none">لا توجد نتائج. جرّب تعديل عوامل البحث.</div>
+</div>
+
+<script>
+/* ===== بيانات مؤقتة إن لم يكن apps.json موجود (سوف يتم استبدال بالملف الحقيقي) ===== */
+let items = [];
+
+/* ===== local counters ===== */
+let likes = JSON.parse(localStorage.getItem('likes')||'{}');
+let downloads = JSON.parse(localStorage.getItem('downloads')||'{}');
+
+/* ===== DOM refs ===== */
+const grid = document.getElementById('grid');
+const empty = document.getElementById('empty');
+const search = document.getElementById('search');
+const category = document.getElementById('category');
+const paid = document.getElementById('paid');
+const sort = document.getElementById('sort');
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const aiMessages = document.getElementById('aiMessages');
+const aiInput = document.getElementById('aiInput');
+const aiSend = document.getElementById('aiSend');
+
+/* ===== fetch apps.json ===== */
+fetch('apps.json').then(r=>{
+  if(!r.ok) throw 'apps.json غير موجود';
+  return r.json();
+}).then(data=>{
+  items = Array.isArray(data)?data:[];
+
+  items.forEach(it=>{
+    if(!it.id) it.id = Date.now()+Math.floor(Math.random()*9999);
+    if(!it.type) it.type = 'free';
+    if(!it.category) it.category = 'app';
+    if(!it.tags) it.tags = [];
+    if(typeof it.rate !== 'number') it.rate = parseFloat(it.rate)||0;
+  });
+
+  render();
+}).catch(e=>{
+  grid.innerHTML = '<div class="empty">خطأ في تحميل apps.json: '+String(e)+'</div>';
+});
+
+/* ===== helpers ===== */
+function esc(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+function debounce(fn,t=200){ let to; return function(){ clearTimeout(to); to=setTimeout(()=>fn.apply(this,arguments),t); } }
+
+/* ===== render ===== */
+function render(){
+  const q = (search.value||'').trim().toLowerCase();
+  const cat = category.value;
+  const paidVal = paid.value;
+  const s = sort.value;
+
+  let list = items.slice();
+
+  if(q) list = list.filter(a=>
+    (a.name||'').toLowerCase().includes(q) ||
+    (a.desc||'').toLowerCase().includes(q) ||
+    (a.tags||[]).join(' ').toLowerCase().includes(q) ||
+    (a.category||'').toLowerCase().includes(q)
+  );
+
+  if(cat!=='all') list = list.filter(i => (i.category||'')===cat);
+  if(paidVal!=='all') list = list.filter(i => (i.type||'free')===paidVal);
+
+  if(s==='rate') list.sort((a,b)=>(b.rate||0)-(a.rate||0));
+  if(s==='downloads') list.sort((a,b)=>(downloads[b.id]||0)-(downloads[a.id]||0));
+  if(s==='new') list.sort((a,b)=>(b.id||0)-(a.id||0));
+  if(s==='name') list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+
+  grid.innerHTML='';
+  if(list.length===0){ empty.style.display='block'; return } else empty.style.display='none';
+
+  list.forEach(it=> grid.appendChild(card(it)));
+}
+
+/* ===== create card ===== */
+function card(it){
+  const el = document.createElement('article'); el.className = 'card';
+  const unlocked = localStorage.getItem('unlock_'+it.id) === 'true';
+  const tagsHtml = (it.tags||[]).slice(0,4).map(t=>`<span style="display:inline-block;margin-left:6px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.03);font-size:12px">${esc(t)}</span>`).join('');
+  el.innerHTML = `
+    <div style="position:relative">
+      <img class="thumb" src="${esc(it.img||'')}" onerror="this.style.opacity=.45;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=600 height=400><rect width=100% height=100% fill=%23000000 /></svg>'"/>
+      <div style="position:absolute;left:12px;top:12px"><span class="badge ${it.type==='free'?'free':'paid'}">${it.type==='free'?'مجاني':'مدفوع'}</span></div>
+      <div style="position:absolute;right:12px;top:12px">${esc(it.category||'')}</div>
+    </div>
+    <div style="margin-top:8px">
+      <div class="title">${esc(it.name||'')}</div>
+      <div class="desc">${esc(it.desc||'')}</div>
+      <div class="meta"><div>⭐ ${it.rate||0}</div><div>⬇ ${downloads[it.id]||0} • ❤️ ${likes[it.id]||0}</div></div>
+      <div class="action"></div>
+      <div style="margin-top:8px">${tagsHtml}</div>
+    </div>
+  `;
+  const action = el.querySelector('.action');
+
+  if(it.type==='free' || localStorage.getItem('unlock_'+it.id) === 'true'){
+    const a = document.createElement('a'); a.className='btn'; a.href = it.apk || '#'; a.textContent='تحميل الآن';
+    a.onclick = ()=>{ downloads[it.id] = (downloads[it.id]||0)+1; localStorage.setItem('downloads', JSON.stringify(downloads)); };
+    action.appendChild(a);
+  } else {
+    const box = document.createElement('div'); box.className='codeBox';
+    box.innerHTML = `<input id="code_input_${it.id}" placeholder="أدخل كود التحميل"><button id="code_btn_${it.id}">تفعيل التحميل</button>`;
+    action.appendChild(box);
+    box.querySelector('button').onclick = ()=>{
+      const v = box.querySelector('input').value.trim();
+      if(v === (it.code||'')){ localStorage.setItem('unlock_'+it.id,'true'); alert('تم التفعيل'); render(); }
+      else alert('كود غير صحيح');
+    };
+  }
+
+  el.addEventListener('click', (e)=>{ const tag = e.target.tagName.toLowerCase(); if(['input','button','a'].includes(tag)) return; openModal(it); });
+  return el;
+}
+
+/* ===== modal ===== */
+function openModal(it){
+  document.getElementById('mTitle').textContent = it.name || '';
+  document.getElementById('mImg').src = it.img || '';
+  document.getElementById('mDesc').innerHTML = esc(it.desc || '');
+  document.getElementById('mRate').textContent = (it.rate||0)+' ★';
+  document.getElementById('mDownloads').textContent = (downloads[it.id]||0)+' مرات';
+  document.getElementById('mCat').textContent = it.category || '';
+  const actionArea = document.getElementById('mAction'); actionArea.innerHTML='';
+  if(it.type==='free' || localStorage.getItem('unlock_'+it.id) === 'true'){
+    const a = document.createElement('a'); a.className='btn'; a.href = it.apk || '#'; a.textContent='تحميل الآن';
+    a.onclick = ()=>{ downloads[it.id] = (downloads[it.id]||0)+1; localStorage.setItem('downloads', JSON.stringify(downloads)); };
+    actionArea.appendChild(a);
+  } else {
+    const box = document.createElement('div'); box.className='codeBox';
+    box.innerHTML = `<input id="modal_code_${it.id}" placeholder="أدخل كود التفعيل"><button id="modal_btn_${it.id}">تفعيل وفتح التحميل</button>`;
+    actionArea.appendChild(box);
+    box.querySelector('button').onclick = ()=>{
+      const v = box.querySelector('input').value.trim();
+      if(v === (it.code||'')){ localStorage.setItem('unlock_'+it.id,'true'); alert('تم التفعيل'); closeModal(); render(); }
+      else alert('كود غير صحيح');
+    };
+  }
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+/* ===== sidebar toggle ===== */
+toggleBtn.addEventListener('click', ()=>{ sidebar.classList.toggle('open'); });
+window.addEventListener('click', (e)=>{ if(!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) sidebar.classList.remove('open'); });
+
+/* ===== filters events ===== */
+search.addEventListener('input', debounce(()=>render(),200));
+category.addEventListener('change', ()=>render());
+paid.addEventListener('change', ()=>render());
+sort.addEventListener('change', ()=>render());
+function filterSet(v){ category.value = v; render(); }
+
+/* ===== change theme (background) ===== */
+function setTheme(cls){
+  const b = document.getElementById('body');
+  b.className = ''; // remove previous
+  if(cls) b.classList.add(cls); else b.classList.add('bg-default');
+}
+
+/* ===== AI assistant (calls serverless function) ===== */
+async function sendAI(question){
+  if(!question) return;
+  appendAI('user', question);
+  aiInput.value = '';
+  appendAI('bot', 'جاري الطلب...'); // placeholder
+  try{
+    const res = await fetch('/.netlify/functions/ai', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ question })
+    });
+    const json = await res.json();
+    const answer = (json && (json.answer || json.choices?.[0]?.message?.content)) || 'لم أستطع الحصول على رد';
+    // remove "جاري الطلب..." last bot placeholder
+    const msgs = Array.from(aiMessages.children);
+    if(msgs.length && msgs[msgs.length-1].dataset.role === 'bot' && msgs[msgs.length-1].textContent.includes('جاري الطلب')) aiMessages.removeChild(msgs[msgs.length-1]);
+
+    appendAI('bot', answer);
+    // parse theme instruction: if assistant returns "[THEME:xyz]" anywhere, apply it
+    const m = answer.match(/\[THEME:([a-z0-9-_]+)\]/i);
+    if(m) setTheme(m[1]);
+  }catch(err){
+    appendAI('bot','حدث خطأ عند الاتصال بالمساعد');
+    console.error(err);
+  }
+}
+function appendAI(role, text){
+  const d = document.createElement('div'); d.className = 'ai-msg '+(role==='user'?'user':'bot'); d.dataset.role = role; d.textContent = text;
+  aiMessages.appendChild(d); aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+aiSend.addEventListener('click', ()=>{ sendAI(aiInput.value.trim()) });
+aiInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') sendAI(aiInput.value.trim()); });
+
+/* ===== init ===== */
+function init(){ render(); }
+init();
+</script>
+
+</body>
+</html>
